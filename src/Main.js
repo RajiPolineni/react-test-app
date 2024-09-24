@@ -13,15 +13,24 @@ const Main = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showSearch, setShowSearch] = useState(false);
   const [title,setTitle] = useState('')
-
+  const [hasMoreData, setHasMoreData] = useState(true);
+console.log(data,'dddd')
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
       try {
         const data = await fetchData(pageNum);
+        
+        console.log(data,'ddat')
+       if(data?.length>0){
         const [newData,title] = data
         setTitle(title)
-        setData((prevData) => [...prevData, ...newData]);
+          setData((prevData) => [...prevData, ...newData]);
+       }else{
+        setHasMoreData(false);
+       }
+          
+        
       } catch (error) {
         console.error("Error loading data", error);
       } finally {
@@ -33,10 +42,10 @@ const Main = () => {
 
   const handleScroll = useCallback((e) => {
     const { scrollHeight, scrollTop, clientHeight } = e.target;
-    if (scrollHeight - scrollTop <= clientHeight + 100 && !isLoading) {
+    if (scrollHeight - scrollTop <= clientHeight + 100 && !isLoading&& hasMoreData) {
       setPageNum((prev) => prev + 1);
     }
-  }, [isLoading]);
+  }, [isLoading,hasMoreData]);
 
   const handleBackClick = () => {
     setSearchTerm('');
@@ -53,7 +62,7 @@ const Main = () => {
   };
 
   const filteredData = useMemo(() => {
-    return data.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    return data?.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [data, searchTerm]);
 
   return (
@@ -64,6 +73,7 @@ const Main = () => {
       )}
       <ContentGrid items={filteredData} />
       {isLoading && <p>Loading more items...</p>}
+      {!hasMoreData && <p>End of List</p>}
     </div>
   );
 };
