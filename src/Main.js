@@ -14,14 +14,14 @@ const Main = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [title,setTitle] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true);
-console.log(data,'dddd')
+
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
       try {
         const data = await fetchData(pageNum);
         
-        console.log(data,'ddat')
+        //console.log(data,'ddat')
        if(data?.length>0){
         const [newData,title] = data
         setTitle(title)
@@ -32,7 +32,7 @@ console.log(data,'dddd')
           
         
       } catch (error) {
-        console.error("Error loading data", error);
+        //console.error("Error loading data", error);
       } finally {
         setIsLoading(false);
       }
